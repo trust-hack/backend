@@ -1,4 +1,3 @@
-from crypt import methods
 import os, sys
 
 from flask import Flask, request
@@ -30,7 +29,7 @@ def root():
     """
     return json_response(server="active", routes=['%s' % rule for rule in app.url_map.iter_rules()])
 
-@app.route('/database', methods=["GET"])
+@app.route('/database/ping', methods=["GET"])
 def check_status_database():
     """
     Check status database
@@ -46,6 +45,8 @@ def login():
     """
     try:
         payload = request.get_json()
+        fname = payload["fname"]
+        lname = payload["lname"]
         login = payload["login"]
         password = payload["password"]
         role = payload["role"]
@@ -59,6 +60,8 @@ def login():
             return json_response(status_=403, error=content.ErrorIsExists.format(login))
         else:
             return json_response(user=db.sign_up({
+                "fname": fname,
+                "lname": lname,
                 "login": login,
                 "password": password, # Generate and check SHA256 on FRONTEND
                 "role": role,
@@ -66,3 +69,13 @@ def login():
             }))
     else:
         return json_response(user=db.login_check(login))
+
+@app.route('/database/data/put', methods=["POST"])
+def data_put():
+    """
+    Put clean data to Database
+    """
+    data = request.get_json()
+    if data is None:
+        return json_response(status_=403, error=content.ErrorData)
+    return json_response(request=db.data_put(data=data))
