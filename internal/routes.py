@@ -36,12 +36,22 @@ def check_status_database():
     """
     return json_response(database=db.ping())
 
-@app.route('/login', methods=["GET", "POST"])
-def login():
+@app.route('/user/login/<login>', methods=["GET"])
+def login(login):
     """
-    Simple signup & login without sha256
+    Simple login without sha256
+    """
+    if login is None:
+        return json_response(status_=403, error=content.ErrorBodyLoginIsEmpty)
 
-    Required: JSON login, password, role
+    return json_response(user=db.login_check(login))
+
+@app.route('/user/signup', methods=["POST"])
+def signup():
+    """
+    Simple signup without sha256
+
+    Required: JSON login, password
     """
     try:
         payload = request.get_json()
@@ -55,20 +65,19 @@ def login():
     except Exception as E:
         return json_response(status_=403, error=content.ErrorBodyJSON)
 
-    if request.method == "POST":
-        if db.login_check(login):
-            return json_response(status_=403, error=content.ErrorIsExists.format(login))
-        else:
-            return json_response(user=db.sign_up({
-                "fname": fname,
-                "lname": lname,
-                "login": login,
-                "password": password, # Generate and check SHA256 on FRONTEND
-                "role": role,
-                "data": data
-            }))
+   
+    if db.login_check(login):
+        return json_response(status_=402, error=content.ErrorIsExists.format(login))
     else:
-        return json_response(user=db.login_check(login))
+        return json_response(user=db.sign_up({
+            "fname": fname,
+            "lname": lname,
+            "login": login,
+            "password": password, # Generate and check SHA256 on FRONTEND
+            "role": role,
+            "data": data
+        }))
+    
 
 @app.route('/database/data/put', methods=["POST"])
 def data_put():
