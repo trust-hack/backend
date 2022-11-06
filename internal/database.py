@@ -21,3 +21,6 @@ class Database:
     
     def data_put(self, data):
         return self.driver.data.insert_many(data)
+    
+    def data_get(self, filt):
+        return self.driver.data.find({"Наименование округа":filt})

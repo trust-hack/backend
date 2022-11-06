@@ -69,14 +69,15 @@ def signup():
     if db.login_check(login):
         return json_response(status_=402, error=content.ErrorIsExists.format(login))
     else:
-        return json_response(user=db.sign_up({
+        db.sign_up({
             "fname": fname,
             "lname": lname,
             "login": login,
             "password": password, # Generate and check SHA256 on FRONTEND
             "role": role,
             "data": data
-        }))
+        })
+        return json_response(created="ok")
     
 
 @app.route('/database/data/put', methods=["POST"])
@@ -88,3 +89,11 @@ def data_put():
     if data is None:
         return json_response(status_=403, error=content.ErrorData)
     return json_response(request=db.data_put(data=data))
+
+@app.route('/database/data/get', methods=["GET"])
+def data_get():
+    """
+    Get data from Database
+    """
+    filt = request.args.get("filter")
+    return json_response(payload=db.data_get(filt=filt))
