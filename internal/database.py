@@ -26,15 +26,24 @@ class Database:
                 )
         )
     
-    def data_get(self, filt):
+    def data_get(self, data, filt):
         if filt is None:
              return json.loads(
                 json_util.dumps(
-                    self.driver.data.find()
+                    self.driver[data].find()
                 )
             )
+        key = ""
+        if data == "district":
+            key = "Район"
+        elif data == "region":
+            key = "Округ"
+        elif data == "defect":
+            key = "Наименование категории дефекта"
+        else:
+            key = "Наименование округа"
         return json.loads(
                 json_util.dumps(
-                    self.driver.data.find({"Наименование округа":filt})
+                    self.driver[data].find({key:filt})
                 )
         )

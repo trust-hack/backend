@@ -80,20 +80,21 @@ def signup():
         return json_response(created="ok")
     
 
-@app.route('/database/data/put', methods=["POST"])
-def data_put():
-    """
-    Put clean data to Database
-    """
-    data = request.get_json()
-    if data is None:
-        return json_response(status_=403, error=content.ErrorData)
-    return json_response(request=db.data_put(data=data))
+# @app.route('/database/<data>/put', methods=["POST"])
+# def data_put():
+#     """
+#     Put clean data to Database
+#     """
+#     data = request.get_json()
+#     if data is None:
+#         return json_response(status_=403, error=content.ErrorData)
+#     return json_response(request=db.data_put(data=data))
 
-@app.route('/database/data/get', methods=["GET"])
-def data_get():
+@app.route('/database/<data>/get', methods=["GET"])
+def data_get(data):
     """
     Get data from Database
     """
     filt = request.args.get("filter")
-    return json_response(payload=db.data_get(filt=filt))
+    return json_response(payload=db.data_get(data=data, filt=filt))
+
