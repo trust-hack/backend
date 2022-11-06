@@ -67,9 +67,9 @@ def signup():
 
    
     if db.login_check(login):
-        return json_response(status_=402, error=content.ErrorIsExists.format(login))
+        return json_response(status_=403, error=content.ErrorIsExists.format(login))
     else:
-         return json_response(pyaload=db.sign_up({
+        db.sign_up({
             "fname": fname,
             "lname": lname,
             "login": login,
@@ -77,8 +77,7 @@ def signup():
             "role": role,
             "data": data
         })
-        )
-        # return json_response(created="ok")
+        return json_response(created="ok")
     
 
 @app.route('/database/data/put', methods=["POST"])
