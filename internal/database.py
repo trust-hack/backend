@@ -17,10 +17,22 @@ class Database:
         )
 
     def sign_up(self, user):
-        return self.driver.users.insert_one(user)
+         return json.loads(
+            json_util.dumps(
+                self.driver.users.insert_one(user)
+            )
+        )
     
     def data_put(self, data):
-        return self.driver.data.insert_many(data)
+        return json.loads(
+                json_util.dumps(
+                    self.driver.data.insert_many(data)
+                )
+        )
     
     def data_get(self, filt):
-        return self.driver.data.find({"Наименование округа":filt})
+        return json.loads(
+                json_util.dumps(
+                    self.driver.data.find({"Наименование округа":filt})
+                )
+        )
